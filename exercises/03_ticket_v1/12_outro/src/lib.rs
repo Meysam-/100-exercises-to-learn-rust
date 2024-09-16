@@ -5,7 +5,68 @@
 //   The unit price is in cents and must be strictly greater than zero.
 //   Order must include a method named `total` that returns the total price of the order.
 //   Order must provide setters and getters for each field.
-//
+
+pub struct Order {
+    product_name: String,
+    quantity: u64,
+    unit_price: u64 // cents
+}
+
+impl Order {
+    fn assert_product_name(product_name: &String) {
+        if product_name.is_empty() {
+            panic!("product name empty");
+        }
+        if product_name.len() > 300 {
+            panic!("product name longer than 300 bytes");
+        }
+    }
+    fn assert_quantity(quantity: &u64) {
+        if quantity <= &(0 as u64) { // probably not good. Look the next function
+            panic!("Quantity is zero");
+        }
+    }
+    fn assert_unit_price(unit_price: &u64) {
+        if *unit_price <= 0 as u64 { // * is converting the unit_price from a refrence into a value (I think copies?)
+            panic!("unit_price is zero");
+        }
+    }
+    pub fn new(product_name: String, quantity: u64, unit_price: u64) -> Order {
+        Order::assert_product_name(&product_name);
+        Order::assert_quantity(&quantity);
+        Order::assert_unit_price(&unit_price);
+        Order {            
+            product_name,
+            quantity,
+            unit_price
+        }
+    }
+    pub fn total(&self) -> u64 {
+        self.quantity() * self.unit_price()
+    }
+    pub fn product_name(&self) -> &String {
+        &self.product_name
+    }
+    pub fn quantity(&self) -> &u64 {
+        &self.quantity
+    }
+    pub fn unit_price(&self) -> &u64 {
+        &self.unit_price
+    }
+    pub fn set_product_name(&mut self, new_product_name: String) {
+        Order::assert_product_name(&new_product_name);
+        self.product_name = new_product_name;
+    }
+    pub fn set_quantity(&mut self, new_quantity: u64) {
+        Order::assert_quantity(&new_quantity);
+        self.quantity = new_quantity;
+    }
+    pub fn set_unit_price(&mut self, new_unit_price: u64) {
+        Order::assert_unit_price(&new_unit_price);
+        self.unit_price = new_unit_price;
+    }
+}
+
 // Tests are located in a different place this time—in the `tests` folder.
 // The `tests` folder is a special location for `cargo`. It's where it looks for **integration tests**.
 // Integration here has a very specific meaning: they test **the public API** of your project.

@@ -8,7 +8,28 @@ struct Ticket {
 
 // TODO: Implement the `PartialEq` trait for `Ticket`.
 
-impl PartialEq for Ticket {}
+impl PartialEq for Ticket {
+    fn eq(&self, other: &Ticket) -> bool {
+        // It can be defined as: fn eq(&self, other: &self) -> bool {
+        // self.title == other.title && self.description == other.description && self.status == other.status
+
+        // This can be implemented this way too:
+        // This way if the structure changes, compiler will error.
+        // This is called destructuring 
+        let Ticket {
+            title,
+            description,
+            status,
+        } = self;
+        let Ticket {
+            title: other_title, // this changes the name of the filed in the struct.
+            description: other_description,
+            status: other_status,
+        } = other;
+        title == other_title && description == other_description && status == other_status
+    }
+
+}
 
 #[cfg(test)]
 mod tests {
