@@ -13,20 +13,38 @@
 // You don't have to though: it's perfectly okay to write three separate
 // implementations manually. Venture further only if you're curious.
 
-trait TargetTag {}
-
-impl TargetTag for u32 {}
-impl TargetTag for &u32 {}
-impl TargetTag for u16 {}
-
 trait Power<T> {
-    fn power(&self, n: T) -> Self;
+    type Output;
+    fn power(&self, n: T) -> Self::Output;
 }
 
 impl Power<u32> for u32 {
-    fn power(&self, n: u32) -> u32 {
+    type Output = u32;
+    fn power(&self, n: u32) -> Self::Output {
         let mut res: u32 = 1;
         for _ in 0..n {
+            res = res * self;
+        }
+        res
+    }
+}
+
+impl Power<u16> for u32 {
+    type Output = u32;
+    fn power(&self, n: u16) -> Self::Output {
+        let mut res: u32 = 1;
+        for _ in 0..n {
+            res = res * self;
+        }
+        res
+    }
+}
+
+impl Power<&u32> for u32 {
+    type Output = u32;
+    fn power(&self, n: &u32) -> Self::Output {
+        let mut res: u32 = 1;
+        for _ in 0..*n {
             res = res * self;
         }
         res
