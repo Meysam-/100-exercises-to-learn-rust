@@ -6,23 +6,21 @@
 pub struct TicketDescription(String);
 
 #[derive(Debug, thiserror::Error)]
-#[error("{0}")]
-pub struct TicketDescriptionError(String);
-
-impl From<&str> for TicketDescriptionError {
-    fn from(value: &str) -> Self {
-        TicketDescriptionError(value.into())
-    }
-}
+pub enum TicketDescriptionError{
+    #[error("The description cannot be empty")]
+    Empty,
+    #[error("The description cannot be longer than 500 bytes")]
+    TooLong
+} 
 
 impl TryFrom<String> for TicketDescription {
     type Error = TicketDescriptionError;
 
     fn try_from(value: String) -> Result<Self, Self::Error> {
         if value.is_empty() {
-            Err("The description cannot be empty".into())
+            Err(TicketDescriptionError::Empty)
         } else if value.len() > 500 {
-            Err("The description cannot be longer than 500 bytes".into())
+            Err(TicketDescriptionError::TooLong)
         } else {
             Ok(TicketDescription(value))
         }
