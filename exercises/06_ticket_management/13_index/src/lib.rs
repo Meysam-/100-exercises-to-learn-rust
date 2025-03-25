@@ -58,14 +58,42 @@ impl TicketStore {
     }
 }
 
+impl std::ops::Index<TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, index: TicketId) -> &Self::Output {
+        self.get(index).unwrap()
+    }
+}
+
+impl std::ops::Index<&TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, index: &TicketId) -> &Self::Output {
+        // self.get(index.clone()).unwrap()
+        &self[*index]
+    }
+}
+
+// NOTE: container[index] is actually syntactic sugar for *container.index(index)
+// Examples for future Meysam:
+
+// let store2 = TicketStore::new();
+// let id = TicketId(10);
+// let a = &store2[id];
+// let b = store2.index(id);
+// let c = TicketStore::index(&store2, id);
 #[cfg(test)]
 mod tests {
-    use crate::{Status, TicketDraft, TicketStore};
+    use std::ops::Index;
+
+    use crate::{Status, TicketDraft, TicketId, TicketStore};
     use ticket_fields::test_helpers::{ticket_description, ticket_title};
 
     #[test]
     fn works() {
         let mut store = TicketStore::new();
+        
 
         let draft1 = TicketDraft {
             title: ticket_title(),
