@@ -1,6 +1,20 @@
 // TODO: Define a function named `squared` that raises all `i32`s within a slice to the power of 2.
 //  The slice should be modified in place.
 
+use core::slice;
+
+fn squared(slice: &mut [i32]) {
+    // for (index, value) in slice.iter().map(|x| x * x).enumerate().collect::<Vec<_>>() {
+    //     slice[index] = value;
+    // }
+
+    // or
+
+    for i in slice.iter_mut() {
+        *i *= *i
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

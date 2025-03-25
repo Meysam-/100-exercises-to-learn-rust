@@ -6,10 +6,11 @@
 // You also need to add a `get` method that takes as input a `TicketId`
 // and returns an `Option<&Ticket>`.
 
-use ticket_fields::{TicketDescription, TicketTitle};
+use ticket_fields::{test_helpers::ticket_description, TicketDescription, TicketTitle};
 
 #[derive(Clone)]
 pub struct TicketStore {
+    next_ticket_id: u64,
     tickets: Vec<Ticket>,
 }
 
@@ -38,14 +39,35 @@ pub enum Status {
 }
 
 impl TicketStore {
+    fn generate_id(&mut self) -> TicketId {
+        self.next_ticket_id += 1;
+        TicketId(self.next_ticket_id - 1)
+    }
+
     pub fn new() -> Self {
         Self {
+            next_ticket_id: 0,
             tickets: Vec::new(),
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
+    pub fn add_ticket(&mut self, ticket: TicketDraft) -> TicketId {
+        let id = self.generate_id();
+        self.tickets.push(Ticket {
+            title: ticket.title,
+            description: ticket.description,
+            status: Status::ToDo,
+            id: id,
+        });
+        id
+    }
+
+    pub fn get(&self, id: TicketId) -> Option<&Ticket> {
+        // for i in self.tickets.iter().filter(|x| x.id == id) {
+        //     return Some(i);
+        // }
+        // return None;
+        self.tickets.iter().find(|x| x.id == id)
     }
 }
 
