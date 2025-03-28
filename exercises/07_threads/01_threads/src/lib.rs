@@ -14,8 +14,35 @@
 // this is necessary in the next exercise.
 use std::thread;
 
+// Works but it's ugly
+pub fn sum_try_1(v: Vec<i32>) -> i32 {
+    let left = v[..v.len() / 2].iter().cloned().collect::<Vec<i32>>();
+    let right = v[v.len() / 2..].iter().cloned().collect::<Vec<i32>>();
+    let h1 = thread::spawn(move || left.iter().sum::<i32>());
+    let h2 = thread::spawn(move || right.iter().sum::<i32>());
+
+    h1.join().unwrap() + h2.join().unwrap()
+}
+
+// Works and it's a bit better
+pub fn sum_try_2(v: Vec<i32>) -> i32 {
+    let left = v[..v.len() / 2].to_vec();
+    let right = v[v.len() / 2..].to_vec();
+    let h1 = thread::spawn(move || left.iter().sum::<i32>());
+    let h2 = thread::spawn(move || right.iter().sum::<i32>());
+
+    h1.join().unwrap() + h2.join().unwrap()
+}
+
 pub fn sum(v: Vec<i32>) -> i32 {
-    todo!()
+    let (v1, v2) = v.split_at(v.len() / 2);
+    let left = v1.to_vec();
+    let right = v2.to_vec();
+
+    let h1 = thread::spawn(move || left.iter().sum::<i32>());
+    let h2 = thread::spawn(move || right.iter().sum::<i32>());
+
+    h1.join().unwrap() + h2.join().unwrap()
 }
 
 #[cfg(test)]
